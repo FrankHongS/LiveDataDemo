@@ -1,4 +1,4 @@
-package com.hon.livedatademo;
+package com.hon.livedatademo.main;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;

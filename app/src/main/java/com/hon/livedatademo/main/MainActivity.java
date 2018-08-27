@@ -1,9 +1,9 @@
-package com.hon.livedatademo;
+package com.hon.livedatademo.main;
 
+import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.math.BigDecimal;
+import com.hon.livedatademo.R;
+import com.hon.livedatademo.next.NextActivity;
 
 /**
  * Created by Frank on 2018/8/26.
@@ -23,12 +24,10 @@ import java.math.BigDecimal;
 public class MainActivity extends AppCompatActivity{
 
     private NameViewModel mModel;
-    private StockViewModel mStockModel;
 
     private TextView mNameText;
     private Button mChangeNameButton;
 
-    private TextView mMainPriceText;
     private Button mNextButton;
 
     @Override
@@ -38,7 +37,6 @@ public class MainActivity extends AppCompatActivity{
 
         mNameText=findViewById(R.id.tv_name);
         mChangeNameButton=findViewById(R.id.btn_change_name);
-        mMainPriceText=findViewById(R.id.tv_main_price);
         mNextButton=findViewById(R.id.btn_next_activity);
 
 
@@ -60,7 +58,6 @@ public class MainActivity extends AppCompatActivity{
 
         // Get the ViewModel
         mModel= ViewModelProviders.of(this).get(NameViewModel.class);
-        mStockModel=ViewModelProviders.of(this).get(StockViewModel.class);
 
         // Create the observer which updates the UI.
         final Observer<String> nameObserver=new Observer<String>() {
@@ -73,11 +70,21 @@ public class MainActivity extends AppCompatActivity{
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         mModel.getCurrentName().observe(this,nameObserver);
 
-        mStockModel.getStockPrice().observe(this, new Observer<BigDecimal>() {
-            @Override
-            public void onChanged(@Nullable BigDecimal bigDecimal) {
-                mMainPriceText.setText(bigDecimal.toString());
-            }
-        });
     }
+
+        private void test(){
+            LiveData<Integer> age= Transformations.map(mModel.getCurrentName(), new Function<String, Integer>() {
+                @Override
+                public Integer apply(String name) {
+                    return Integer.valueOf(name);
+                }
+            });
+
+            LiveData<Integer> height= Transformations.switchMap(mModel.getCurrentName(), new Function<String, LiveData<Integer>>() {
+                @Override
+                public LiveData<Integer> apply(String input) {
+                    return null;
+                }
+            });
+        }
 }

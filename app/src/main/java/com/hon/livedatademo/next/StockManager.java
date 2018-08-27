@@ -1,4 +1,4 @@
-package com.hon.livedatademo;
+package com.hon.livedatademo.next;
 
 import java.math.BigDecimal;
 
